@@ -5,6 +5,7 @@ import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 
 @Configuration
 public class CassandraConfiguration extends AbstractCassandraConfiguration{
+    
        @Value("${spring.cassandra.keyspace-name}")
        private String keySpace;
        @Value("${spring.cassandra.contact-points}")

@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.vikrant.org.microserviceslab2rest.Exceptions.UserNotFoundException;
 import com.vikrant.org.microserviceslab2rest.controllers.versionings.PersonController;
+import com.vikrant.org.microserviceslab2rest.models.Post;
 import com.vikrant.org.microserviceslab2rest.models.User;
 import com.vikrant.org.microserviceslab2rest.services.UserDAOService;
 
@@ -32,7 +33,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> getAll() {
-        return userDAOService.findAll();
+        return userDAOService.getAll();
         //return userDAOService.findAllWithFilter();
     }
     @GetMapping("/jpa/users")
@@ -58,8 +59,12 @@ public class UserController {
         return entityModel;
         
     }
+    @GetMapping("/jpa/user/{id}/posts")
+    public List<Post> getUserPostById(@PathVariable int id) {
+        return userDAOService.getAllPostforId(id);
+    }
     @GetMapping("/jpa/user/{id}")
-    public Optional<User> getUserbyIdJPA(@PathVariable int id) {
+    public User getUserbyIdJPA(@PathVariable int id) {
         return userDAOService.findOneJPA(id);
         
     }
@@ -83,10 +88,11 @@ public class UserController {
     }
     @PostMapping("/jpa/userCreate")
     public ResponseEntity<User> createUserJPA(@Valid @RequestBody  User user) {
-       userDAOService.saveJPA(user);
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/{id}").
-        buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(location).build();
+       return userDAOService.saveJPA(user);
+    }
+    @PostMapping("/jpa/createPost/{id}")
+    public ResponseEntity<Post> createPostJPA(@PathVariable int id,@Valid @RequestBody  Post post) {
+       return userDAOService.savePostforUser(id, post);
     }
     
 }
